@@ -22,19 +22,24 @@ export default function WorkerProfile() {
       try {
         // Fetch all workers and find the one (mocking a GET /worker/:id route if it doesn't exist)
         const workersRes = await fetch(`${API_BASE_URL}/workers`);
-        const servicesRes = await fetch(`${API_BASE_URL}/services?workerId=${id}`);
         
+        let actualUserId = id;
         if (workersRes.ok) {
           const allWorkers = await workersRes.json();
-          const foundWorker = allWorkers.find((w: any) => w.id === parseInt(id as string));
+          const foundWorker = allWorkers.find((w: any) => w.userId === parseInt(id as string) || w.id === parseInt(id as string));
           setWorker(foundWorker);
+          if (foundWorker) {
+            actualUserId = foundWorker.userId || foundWorker.id;
+          }
         }
+        
+        const servicesRes = await fetch(`${API_BASE_URL}/services?workerId=${actualUserId}`);
         
         if (servicesRes.ok) {
           const servData = await servicesRes.json();
           // The backend might return all services if workerId query isn&apos;t implemented properly,
           // so we double check and filter them.
-          const filteredServices = servData.filter((s:any) => s.workerId === parseInt(id as string));
+          const filteredServices = servData.filter((s:any) => s.workerId === parseInt(actualUserId as string));
           setServices(filteredServices.length > 0 ? filteredServices : servData); // Fallback to all data if filter yields 0
         }
       } catch (error) {

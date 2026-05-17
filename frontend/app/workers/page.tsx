@@ -205,7 +205,7 @@ export default function WorkersPage() {
                         <div className="flex items-center gap-1.5"><Briefcase className="w-3.5 h-3.5" /> {profile.experience || '1+ Year'}</div>
                       </div>
 
-                      <Link href={`/worker/${profile.id}`} className="btn-secondary w-full group-hover:bg-primary group-hover:text-white group-hover:border-blue-600">
+                      <Link href={`/worker/${profile.userId || profile.id}`} className="btn-secondary w-full group-hover:bg-primary group-hover:text-white group-hover:border-blue-600">
                         View Profile
                       </Link>
                     </div>
